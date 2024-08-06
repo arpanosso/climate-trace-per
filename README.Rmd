@@ -26,10 +26,8 @@ library(ggsci)
 ## Carregando a base de dados
 
 ```{r}
-# country_emissions <- read_rds("data/country_emissions.rds")
-# emissions_sources <- read_rds("data/emissions_sources.rds") %>% 
-#   mutate(source_name_1 = str_to_title(source_name)) %>% 
-#   filter(year >=2015, year<=2023)
+country_emissions <- read_rds("data/country_emissions.rds")
+emissions_sources <- read_rds("data/emissions_sources.rds") 
 
 # emissions_sources$year %>% unique()
 # emissions_sources$source_name %>% unique()
@@ -38,64 +36,64 @@ library(ggsci)
 
 ## Espacialização dos pontos amostrais
 ```{r}
-# emissions_sources %>%
-#   filter(year == 2022) %>%
-#   ggplot(aes(x=lon,y=lat))+
-#   geom_point()
+emissions_sources %>%
+  filter(year == 2022) %>%
+  ggplot(aes(x=lon,y=lat))+
+  geom_point()
 ```
 
 ```{r}
-# shapefile_path <- "data/Departamental INEI 2023 geogpsperu SuyoPomalia/"
-# shapefile_data <- st_read(shapefile_path)
-# shapefile_data %>%  
-#   ggplot() +
-#   geom_sf() +
-#   theme_minimal() +
-#   labs(title = "Visualização do Shapefile",
-#        caption = "Fonte: Departamental INEI 2023 geogpsperu")
+shapefile_path <- "data/Departamental INEI 2023 geogpsperu SuyoPomalia/"
+shapefile_data <- st_read(shapefile_path)
+shapefile_data %>%
+  ggplot() +
+  geom_sf() +
+  theme_minimal() +
+  labs(title = "Visualização do Shapefile",
+       caption = "Fonte: Departamental INEI 2023 geogpsperu")
 ```
 
 ```{r}
-# shapefile_data %>% 
-#   ggplot() +
-#   geom_sf(fill="white", color="black",
-#           size=.15, show.legend = FALSE) +
-#   geom_point(
-#     data = emissions_sources %>%
-#       filter(year == 2022),
-#     aes(lon,lat)) +
-#   theme_minimal()
+shapefile_data %>%
+  ggplot() +
+  geom_sf(fill="white", color="black",
+          size=.15, show.legend = FALSE) +
+  geom_point(
+    data = emissions_sources %>%
+      filter(year == 2022),
+    aes(lon,lat)) +
+  theme_minimal()
 ```
 
 ```{r}
-# nomes_departamentos <- shapefile_data$DEPARTAMEN %>% str_to_title()
-# nomes_departamentos[17] <- "Madre de Dios"
+nomes_departamentos <- shapefile_data$DEPARTAMEN %>% str_to_title()
+nomes_departamentos[17] <- "Madre de Dios"
 ```
 
 
 ```{r}
-# emissions_sources %>% 
-#   filter(
-#     year == 2022,
-#     gas == "co2e_100yr",
-#     !source_name %in% nomes_departamentos,
-#     !sub_sector %in% c("forest-land-clearing",
-#                             "forest-land-degradation",
-#                             "shrubgrass-fires",
-#                             "forest-land-fires",
-#                             "wetland-fires",
-#                             "removals"),
-#     sector_name != "forestry_and_land_use"
-#     # source_name == "Manu"
-#     ) %>% 
-#   group_by(sector_name) %>% 
-#   summarise(
-#    emission = sum(emissions_quantity, na.rm=TRUE)
-#    ) %>% 
-#   arrange(desc(emission)) %>% 
-#   ungroup() %>% 
-#   mutate(
-#     Acumulada = cumsum(emission)
-#   )
+emissions_sources %>%
+  filter(
+    year == 2022,
+    gas == "co2e_100yr",
+    !source_name %in% nomes_departamentos,
+    !sub_sector %in% c("forest-land-clearing",
+                            "forest-land-degradation",
+                            "shrubgrass-fires",
+                            "forest-land-fires",
+                            "wetland-fires",
+                            "removals"),
+    sector_name != "forestry_and_land_use"
+    # source_name == "Manu"
+    ) %>%
+  group_by(sector_name) %>%
+  summarise(
+   emission = sum(emissions_quantity, na.rm=TRUE)
+   ) %>%
+  arrange(desc(emission)) %>%
+  ungroup() %>%
+  mutate(
+    Acumulada = cumsum(emission)
+  )
 ```
 
