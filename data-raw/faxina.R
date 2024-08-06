@@ -1,4 +1,5 @@
 library(tidyverse)
+Sys.setlocale("LC_ALL","pt_BR.UTF-8")
 # library(ggsci)
 # source("R/my-function.R")
 
@@ -59,39 +60,39 @@ glimpse(my_data)
 write_rds(my_data, "data/emissions_sources.rds")
 
 # country data -----------------------------------------------------------------
-# # buscando o caminho dos setores
-# tbl_directorys <- as_tibble(
-#   list.files("data-raw/PER/", full.names = TRUE, recursive = TRUE)) %>%
-#   filter(str_detect(value, "country_emissions.csv"))
-#
-# # Extraindo os caminhos dos arquvios
-# value <- tbl_directorys %>% pull(value)
-#
-# # Empilhando todos os arquivos no objeto dados
-# my_file_read(value[1])
-# dados_country <- map_dfr(value, my_file_read) %>%
-#   as_tibble()
-# glimpse(dados_country)
-#
-# dados_country <- dados_country %>%
-#   # filter(gas == "co2e_100yr") %>%
-#   mutate(
-#     start_time = as_date(start_time),
-#     end_time = as_date(end_time),
-#     created_date = as_date(created_date),
-#     modified_date = as_date(modified_date),
-#     year = lubridate::year(end_time)
-#   ) %>%
-#   mutate(
-#     sector_name = str_split(directory,
-#                             "/",
-#                             simplify = TRUE)[,3],
-#     sector_name = str_remove(sector_name,"_country_emissions.csv")
-#   )
-#
-# dados_country$directory[1]
-#
-# dados_country %>%
-#   select( sector_name ) %>%
-#   distinct()
-# write_rds(dados_country, "data/country_emissions.rds")
+# buscando o caminho dos setores
+tbl_directorys <- as_tibble(
+  list.files("data-raw/PER/", full.names = TRUE, recursive = TRUE)) %>%
+  filter(str_detect(value, "country_emissions.csv"))
+
+# Extraindo os caminhos dos arquvios
+value <- tbl_directorys %>% pull(value)
+
+# Empilhando todos os arquivos no objeto dados
+my_file_read(value[1])
+data_country <- map_dfr(value, my_file_read) %>%
+  as_tibble()
+glimpse(data_country)
+
+data_country <- data_country %>%
+  # filter(gas == "co2e_100yr") %>%
+  mutate(
+    start_time = as_date(start_time),
+    end_time = as_date(end_time),
+    created_date = as_date(created_date),
+    modified_date = as_date(modified_date),
+    year = lubridate::year(end_time)
+  ) %>%
+  mutate(
+    sector_name = str_split(directory,
+                            "/",
+                            simplify = TRUE)[,3],
+    sector_name = str_remove(sector_name,"_country_emissions.csv")
+  )
+
+data_country$directory[1]
+
+data_country %>%
+  select( sector_name ) %>%
+  distinct()
+write_rds(data_country, "data/country_emissions.rds")
