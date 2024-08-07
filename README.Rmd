@@ -58,7 +58,7 @@ shapefile_data_dep %>%
 ```
 
 ```{r}
-shapefile_data_dis %>%
+shapefile_data_dep %>%
   ggplot() +
   geom_sf(fill="white", color="black",
           size=.15, show.legend = FALSE) +
@@ -76,7 +76,7 @@ shapefile_data_dis %>%
           size=.15, show.legend = FALSE) +
   theme_minimal() +
   labs(title = "Visualização do Shapefile",
-       caption = "Fonte: Departamental INEI 2023 geogpsperu SuyoPomalia") +
+       caption = "Fonte: Distrital INEI 2023 geogpsperu SuyoPomalia") +
   tema_mapa()
 ```
 
@@ -97,11 +97,6 @@ shapefile_data_pro %>%
 nomes_departamentos <- shapefile_data_dep$DEPARTAMEN %>% str_to_title()
 nomes_departamentos[17] <- "Madre de Dios"
 ```
-```{r}
-emissions_sources$source_name %>% unique() %>% length()
-shap
-```
-
 
 ```{r}
 emissions_sources %>%

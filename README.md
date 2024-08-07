@@ -9,7 +9,7 @@
 library(sf)
 library(tidyverse)
 library(ggsci)
-# source("R/gafico.R")
+source("R/gafico.R")
 # source("R/my-function.R")
 ```
 
@@ -36,30 +36,76 @@ emissions_sources %>%
 ![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
-shapefile_path <- "data/Departamental INEI 2023 geogpsperu SuyoPomalia/"
-shapefile_data <- st_read(shapefile_path)
+shapefile_path_dep <- "data/Departamental INEI 2023 geogpsperu SuyoPomalia/"
+shapefile_path_dis <- "data/Distrital INEI 2023 geogpsperu SuyoPomalia/"
+shapefile_path_pro <- "data/Provincial INEI 2023 geogpsperu SuyoPomalia/"
+shapefile_data_dep <- st_read(shapefile_path_dep)
 #> Reading layer `Departamental INEI 2023 geogpsperu SuyoPomalia' from data source 
-#>   `C:\Github\climate-trace-per\data\Departamental INEI 2023 geogpsperu SuyoPomalia' 
+#>   `D:\Github\climate-trace-per\data\Departamental INEI 2023 geogpsperu SuyoPomalia' 
 #>   using driver `ESRI Shapefile'
 #> Simple feature collection with 25 features and 4 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
 #> Bounding box:  xmin: -81.32823 ymin: -18.35093 xmax: -68.65228 ymax: -0.03860597
 #> Geodetic CRS:  WGS 84
-shapefile_data %>%
+shapefile_data_dis <- st_read(shapefile_path_dis)
+#> Reading layer `Distrital INEI 2023 geogpsperu SuyoPomalia' from data source 
+#>   `D:\Github\climate-trace-per\data\Distrital INEI 2023 geogpsperu SuyoPomalia' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 1891 features and 9 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -81.32823 ymin: -18.35093 xmax: -68.65228 ymax: -0.03860597
+#> Geodetic CRS:  WGS 84
+shapefile_data_pro <- st_read(shapefile_path_pro)
+#> Reading layer `Provincial INEI 2023 geogpsperu SuyoPomalia' from data source 
+#>   `D:\Github\climate-trace-per\data\Provincial INEI 2023 geogpsperu SuyoPomalia' 
+#>   using driver `ESRI Shapefile'
+#> Simple feature collection with 196 features and 5 fields
+#> Geometry type: MULTIPOLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -81.32823 ymin: -18.35093 xmax: -68.65228 ymax: -0.03860597
+#> Geodetic CRS:  WGS 84
+shapefile_data_dep %>%
   ggplot() +
   geom_sf() +
   theme_minimal() +
   labs(title = "Visualização do Shapefile",
-       caption = "Fonte: Departamental INEI 2023 geogpsperu")
+       caption = "Fonte: Departamental INEI 2023 geogpsperu SuyoPomalia")
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
-shapefile_data %>%
+shapefile_data_dep %>%
   ggplot() +
   geom_sf(fill="white", color="black",
+          size=.15, show.legend = FALSE) +
+  theme_minimal() +
+  labs(title = "Visualização do Shapefile",
+       caption = "Fonte: Departamental INEI 2023 geogpsperu SuyoPomalia") +
+  tema_mapa()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+``` r
+shapefile_data_dis %>%
+  ggplot() +
+  geom_sf(fill="white", color="black",
+          size=.15, show.legend = FALSE) +
+  theme_minimal() +
+  labs(title = "Visualização do Shapefile",
+       caption = "Fonte: Distrital INEI 2023 geogpsperu SuyoPomalia") +
+  tema_mapa()
+```
+
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+``` r
+shapefile_data_pro %>%
+  ggplot() +
+  geom_sf(fill="white", color="gray",
           size=.15, show.legend = FALSE) +
   geom_point(
     data = emissions_sources %>%
@@ -68,10 +114,10 @@ shapefile_data %>%
   theme_minimal()
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
-nomes_departamentos <- shapefile_data$DEPARTAMEN %>% str_to_title()
+nomes_departamentos <- shapefile_data_dep$DEPARTAMEN %>% str_to_title()
 nomes_departamentos[17] <- "Madre de Dios"
 ```
 
@@ -109,4 +155,14 @@ emissions_sources %>%
 #> 5 manufacturing           7104411  68912942.
 #> 6 waste                   6930570. 75843512.
 #> 7 fossil_fuel_operations  6262046. 82105558.
+```
+
+``` r
+emissions_sources %>% 
+  filter(
+    year == 2022,
+    gas == "co2e_100yr",
+    source_name == "Madre de Dios"
+  ) %>% 
+  View()
 ```
